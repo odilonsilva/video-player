@@ -11,6 +11,7 @@
         margin: 0;
         padding: 0;
         color: silver;
+        font-family: 'Segoe UI'
     }
     
     .player-container,
@@ -26,7 +27,7 @@
         display: flex;
         background-color: #000000ab;
         height: 50px;
-        bottom: 1px;
+        bottom: 0px;
         z-index: 1;
         -webkit-transition: 1s;
         transition: opacity 1s;
@@ -49,7 +50,7 @@
         margin-right: 10px;
         height: 30px;
         width: 30px;
-        color: teal;
+        cursor: pointer;
     }
     
     .pull-right {
@@ -62,12 +63,13 @@
     
     .slider-volume-container {
         opacity: 0;
+        display: none;
         position: absolute;
         background: #000000ab;
         padding: 3px;
         height: 30px;
         width: 200px;
-        bottom: 132px;
+        bottom: 126px;
         z-index: 5;
         transform: rotate(-90deg);
         left: -10px;
@@ -75,7 +77,27 @@
         transition: opacity .5s;
     }
     
+    .settings-container {
+        opacity: 0;
+        display: none;
+        min-height: 100px;
+        background: #000000ab;
+        position: absolute;
+        bottom: 40px;
+        padding: 10px;
+        right: 5px;
+        font-weight: 500;
+        z-index: 7;
+    }
+    
+    .settings-container li {
+        margin: 5px;
+        list-style: none;
+        cursor: pointer;
+    }
+    
     .slider-volume {
+        cursor: pointer;
         -webkit-appearance: none;
         width: 200px;
         height: 30px;
@@ -108,7 +130,6 @@
         margin: 10px;
         margin-top: 5px;
         font-weight: 600;
-        font-family: 'Segoe UI'
     }
     
     .player-timeline,
@@ -164,7 +185,8 @@
 <body>
     <div class="player-container">
         <video preload="none" poster="img/back.jpg">
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+            <source src="img/videoplayback.mp4" type="video/mp4">
+            <!-- <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"> -->
         </video>
         <div class="player-tools">
             <div class="player-timeline-seeker"></div>
@@ -182,7 +204,17 @@
                 <div class="video-time">--:-- / --:--</div>
             </div>
             <div class="tools tools-right">
-                <div class="btn tool-settings"></div>
+                <div class="btn tool-settings">
+                    <div class="settings-container">
+                        Velocidade:
+                        <ul class="speedies">
+                            <li data-speed="1" style="font-weight: 700;text-decoration: underline;">Normal</li>
+                            <li data-speed="1.25">1.25x</li>
+                            <li data-speed="1.5">1.50x</li>
+                            <li data-speed="2">2x</li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="btn tool-fullscreen"></div>
             </div>
         </div>
@@ -195,6 +227,8 @@
         var video = document.querySelector('video');
         var playerTools = document.querySelector('.player-tools');
         var btnPlay = document.querySelector('.tool-play-pause');
+        var btnSettings = document.querySelector('.tool-settings');
+        var settingsContainer = document.querySelector('.settings-container');
         var videoTime = document.querySelector('.video-time');
         var timeLine = document.querySelector('.player-timeline');
         var timeLineSeeker = document.querySelector('.player-timeline-seeker');
@@ -202,11 +236,16 @@
         var sliderVolumeGuide = document.querySelector('.slider-volume-guide');
         var sliderVolume = document.querySelector('.slider-volume');
         var sliderVolumeContainer = document.querySelector('.slider-volume-container');
+        var speedies = document.querySelectorAll('.speedies li');
         var playerInterval = null;
 
         sliderVolume.addEventListener('input', setVolume);
         timeLineSeeker.addEventListener('click', goTo);
         btnPlay.addEventListener('click', play);
+
+        for (const item of speedies) {
+            item.addEventListener('click', setSpeed);
+        }
 
         video.addEventListener('mouseover', function() {
             playerTools.style.cssText = 'opacity:1';
@@ -217,11 +256,17 @@
         video.addEventListener('mouseleave', function() {
             playerTools.style.cssText = 'opacity:0';
         })
-        document.querySelector('.tool-volume').addEventListener('mouseover', function() {
-            sliderVolumeContainer.style.cssText = 'opacity:1';
+        document.querySelector('.tool-volume').addEventListener('click', function() {
+            sliderVolumeContainer.style.cssText = 'opacity:1;display:block';
         })
         document.querySelector('.tool-volume').addEventListener('mouseleave', function() {
-            sliderVolumeContainer.style.cssText = 'opacity:0';
+            sliderVolumeContainer.style.cssText = 'opacity:0;display:none';
+        })
+        btnSettings.addEventListener('click', function() {
+            settingsContainer.style.cssText = 'opacity:1;display:block';
+        })
+        btnSettings.addEventListener('mouseleave', function() {
+            settingsContainer.style.cssText = 'opacity:0;display:none';
         })
 
         function play() {
@@ -237,6 +282,14 @@
                 btnPlay.style.cssText = 'background: url(img/icons.png) 110px 140px;';
                 video.pause();
             }
+        }
+
+        function setSpeed() {
+            for (const item of speedies) {
+                item.style.cssText = 'font-weight: 500;text-decoration: none;';
+            }
+            this.style.cssText = 'font-weight: 700;text-decoration: underline;';
+            video.playbackRate = this.dataset.speed;
         }
 
         function fullScreen() {
