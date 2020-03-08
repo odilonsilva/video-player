@@ -13,38 +13,42 @@
         color: silver;
         font-family: 'Segoe UI'
     }
-    
-    .player-container,
-    .player-tools,
-    video {
+
+    .player-container{
         position: relative;
-        width: 754px;
-        height: 424px;
+        width: 800px;
+        height: 500px;
     }
-    
+
+    video{
+        width: 100%;
+        height: 100%;
+    }
+
     .player-tools {
         position: absolute;
         display: flex;
         background-color: #000000ab;
+        width: 100%;
         height: 50px;
         bottom: 0px;
         z-index: 1;
         -webkit-transition: 1s;
         transition: opacity 1s;
     }
-    
+
     .tools {
         width: 50%;
         display: flex;
         flex-direction: row;
         padding: 10px;
     }
-    
+
     .tools-right {
         justify-content: flex-end;
         align-items: flex-end;
     }
-    
+
     .btn {
         margin-left: 10px;
         margin-right: 10px;
@@ -52,15 +56,15 @@
         width: 30px;
         cursor: pointer;
     }
-    
+
     .pull-right {
         text-align: right;
     }
-    
+
     .btn:hover {
         color: #1b1b1bab;
     }
-    
+
     .slider-volume-container {
         opacity: 0;
         display: none;
@@ -76,7 +80,7 @@
         -webkit-transition: .5s;
         transition: opacity .5s;
     }
-    
+
     .settings-container {
         opacity: 0;
         display: none;
@@ -89,13 +93,13 @@
         font-weight: 500;
         z-index: 7;
     }
-    
+
     .settings-container li {
         margin: 5px;
         list-style: none;
         cursor: pointer;
     }
-    
+
     .slider-volume {
         cursor: pointer;
         -webkit-appearance: none;
@@ -108,7 +112,7 @@
         background: transparent;
         z-index: 7;
     }
-    
+
     .slider-volume-guide {
         height: 30px;
         width: 86%;
@@ -116,7 +120,7 @@
         position: absolute;
         z-index: -2;
     }
-    
+
     .slider-volume::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -125,13 +129,13 @@
         background: #f00;
         cursor: pointer;
     }
-    
+
     .video-time {
         margin: 10px;
         margin-top: 5px;
         font-weight: 600;
     }
-    
+
     .player-timeline,
     .player-timeline-buffered,
     .player-timeline-seeker {
@@ -141,42 +145,42 @@
         position: absolute;
         bottom: 50px;
     }
-    
+
     .player-timeline-buffered {
         background-color: silver;
         z-index: 1;
     }
-    
+
     .player-timeline-seeker {
         width: 100%;
         z-index: 5;
         background-color: transparent;
     }
-    
+
     .tool-play-pause {
         background: url('img/icons.png') 110px 140px;
     }
-    
+
     .tool-volume {
         background: url('img/icons.png') 39px 141px;
     }
-    
+
     .tool-settings {
         background: url('img/icons.png') 0px 141px;
     }
-    
+
     .tool-fullscreen {
         background: url('img/icons.png') -34px 141px;
     }
-    
+
     .tool-volume:hover {
         background: url('img/icons.png') 39px 67px;
     }
-    
+
     .tool-settings:hover {
         background: url('img/icons.png') 0px 67px;
     }
-    
+
     .tool-fullscreen:hover {
         background: url('img/icons.png') -34px 67px;
     }
@@ -221,11 +225,13 @@
     </div>
 
     <script>
-        document.querySelector('body').addEventListener('contextmenu', function(e) {
+        document.querySelector('body').addEventListener('contextmenu', function (e) {
             e.preventDefault()
         });
+        var playerContainer = document.querySelector('.player-container');
         var video = document.querySelector('video');
         var playerTools = document.querySelector('.player-tools');
+        var btnFullscreen = document.querySelector('.tool-fullscreen');
         var btnPlay = document.querySelector('.tool-play-pause');
         var btnSettings = document.querySelector('.tool-settings');
         var settingsContainer = document.querySelector('.settings-container');
@@ -238,40 +244,70 @@
         var sliderVolumeContainer = document.querySelector('.slider-volume-container');
         var speedies = document.querySelectorAll('.speedies li');
         var playerInterval = null;
+        var isFullscreen = false;
 
         sliderVolume.addEventListener('input', setVolume);
         timeLineSeeker.addEventListener('click', goTo);
         btnPlay.addEventListener('click', play);
+        btnFullscreen.addEventListener('click', fullScreen);
 
         for (const item of speedies) {
             item.addEventListener('click', setSpeed);
         }
 
-        video.addEventListener('mouseover', function() {
+        video.addEventListener('mouseover', function () {
             playerTools.style.cssText = 'opacity:1';
         })
-        playerTools.addEventListener('mouseover', function() {
+        playerTools.addEventListener('mouseover', function () {
             playerTools.style.cssText = 'opacity:1';
         })
-        video.addEventListener('mouseleave', function() {
+        video.addEventListener('mouseleave', function () {
             playerTools.style.cssText = 'opacity:0';
         })
-        document.querySelector('.tool-volume').addEventListener('click', function() {
+        document.querySelector('.tool-volume').addEventListener('click', function () {
             sliderVolumeContainer.style.cssText = 'opacity:1;display:block';
         })
-        document.querySelector('.tool-volume').addEventListener('mouseleave', function() {
+        document.querySelector('.tool-volume').addEventListener('mouseleave', function () {
             sliderVolumeContainer.style.cssText = 'opacity:0;display:none';
         })
-        btnSettings.addEventListener('click', function() {
+        btnSettings.addEventListener('click', function () {
             settingsContainer.style.cssText = 'opacity:1;display:block';
         })
-        btnSettings.addEventListener('mouseleave', function() {
+        btnSettings.addEventListener('mouseleave', function () {
             settingsContainer.style.cssText = 'opacity:0;display:none';
         })
 
+        document.body.addEventListener('keypress',keyBoardHandler)
+
+        function keyBoardHandler(e){
+            switch(e.key){
+                case 'f':
+                    fullScreen();
+                    break;
+                case ' ':
+                    play();
+                    break;
+                case 'k':
+                    play();
+                    break;
+                case 'r':
+                    replay();
+                    break;
+                case 'l':
+                    forward();
+                    break;
+                case 'j':
+                    back();
+                    break;
+                default:
+                    console.log(e.key);
+                    return false;
+            }
+        }
+
         function play() {
             if (playerInterval == null) {
-                playerInterval = setInterval(function() {
+                playerInterval = setInterval(function () {
                     setCurrentTime()
                 }, 100);
                 btnPlay.style.cssText = 'background: url(img/icons.png) -73px 140px;';
@@ -284,6 +320,21 @@
             }
         }
 
+        function replay(){
+            clearInterval(playerInterval);
+            playerInterval = null;
+            video.currentTime = 0;
+            play();
+        }
+
+        function forward(){
+            video.currentTime += 10;
+        }
+
+        function back(){
+            video.currentTime -= 10;
+        }
+
         function setSpeed() {
             for (const item of speedies) {
                 item.style.cssText = 'font-weight: 500;text-decoration: none;';
@@ -293,7 +344,17 @@
         }
 
         function fullScreen() {
-            video.height = 0;
+            if (isFullscreen) {
+                document.exitFullscreen();
+                playerContainer.style.cssText = 'width:800px;height:500px';
+                isFullscreen = false;
+            }
+            else{
+                var width = document.body.clientWidth;
+                document.body.requestFullscreen();
+                playerContainer.style.cssText = `width: ${width}px;height:100%;`;
+                isFullscreen = true;
+            }
         }
 
         function setCurrentTime() {
@@ -325,7 +386,6 @@
             var currValue = sliderVolume.value / 100;
             video.volume = currValue;
             sliderVolumeGuide.style.cssText = 'width:calc(' + String(currValue * 100) + '% - 5px)';
-            // console.log(currValue);
         }
 
         function converTime(hour, min, sec) {
