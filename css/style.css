@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    color: silver;
+    font-family: 'Segoe UI'
+}
+
+.player-container {
+    position: relative;
+    width: 800px;
+    height: 500px;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+}
+
+.player-tools {
+    position: absolute;
+    display: flex;
+    background-color: #000000ab;
+    width: 100%;
+    height: 50px;
+    bottom: 0px;
+    z-index: 1;
+    -webkit-transition: 1s;
+    transition: opacity 1s;
+}
+
+.tools {
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+}
+
+.tools-right {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.btn {
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+}
+
+.pull-right {
+    text-align: right;
+}
+
+.btn:hover {
+    color: #1b1b1bab;
+}
+
+.slider-volume-container {
+    opacity: 0;
+    display: none;
+    position: absolute;
+    background: #000000ab;
+    padding: 3px;
+    height: 30px;
+    width: 200px;
+    bottom: 126px;
+    z-index: 5;
+    transform: rotate(-90deg);
+    left: -10px;
+    -webkit-transition: .5s;
+    transition: opacity .5s;
+}
+
+.settings-container {
+    opacity: 0;
+    display: none;
+    min-height: 100px;
+    background: #000000ab;
+    position: absolute;
+    bottom: 40px;
+    padding: 10px;
+    right: 5px;
+    font-weight: 500;
+    z-index: 7;
+}
+
+.settings-container li {
+    margin: 5px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.slider-volume {
+    cursor: pointer;
+    -webkit-appearance: none;
+    width: 200px;
+    height: 30px;
+    background: #d3d3d3;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    background: transparent;
+    z-index: 7;
+}
+
+.slider-volume-guide {
+    height: 30px;
+    width: 86%;
+    background-color: #f00;
+    position: absolute;
+    z-index: -2;
+}
+
+.slider-volume::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    background: #f00;
+    cursor: pointer;
+}
+
+.video-time {
+    margin: 10px;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+.player-timeline,
+.player-timeline-buffered,
+.player-timeline-seeker {
+    background-color: red;
+    height: 4px;
+    z-index: 2;
+    position: absolute;
+    bottom: 50px;
+}
+
+.player-timeline-buffered {
+    background-color: silver;
+    z-index: 1;
+}
+
+.player-timeline-seeker {
+    width: 100%;
+    z-index: 5;
+    background-color: transparent;
+}
+
+.tool-play-pause {
+    background: url('../img/icons.png') 110px 140px;
+}
+
+.tool-volume {
+    background: url('../img/icons.png') 39px 141px;
+}
+
+.tool-settings {
+    background: url('../img/icons.png') 0px 141px;
+}
+
+.tool-fullscreen {
+    background: url('../img/icons.png') -34px 141px;
+}
+
+.tool-volume:hover {
+    background: url('../img/icons.png') 39px 67px;
+}
+
+.tool-settings:hover {
+    background: url('../img/icons.png') 0px 67px;
+}
+
+.tool-fullscreen:hover {
+    background: url('../img/icons.png') -34px 67px;
+}
